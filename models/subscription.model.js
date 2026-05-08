@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
+const Business = require('./business.model');
+const Plan = require('./plan.model');
 
 const Subscription = sequelize.define('Subscription', {
   id: {
@@ -56,5 +58,10 @@ const Subscription = sequelize.define('Subscription', {
   timestamps: true,
   underscored: true
 });
+
+Subscription.belongsTo(Business, { foreignKey: 'businessId', as: 'business' });
+Business.hasOne(Subscription, { foreignKey: 'businessId', as: 'subscription' });
+Subscription.belongsTo(Plan, { foreignKey: 'planId', as: 'plan' });
+Plan.hasMany(Subscription, { foreignKey: 'planId', as: 'subscriptions' });
 
 module.exports = Subscription;

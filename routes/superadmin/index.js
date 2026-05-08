@@ -45,9 +45,35 @@ router.get('/billing/revenue', billingController.getRevenueOverview);
 router.get('/billing/payments', billingController.getPaymentHistory);
 router.post('/billing/payments/:paymentId/refund', billingController.refundPayment);
 
-// SUPPORT TICKETS
-router.get('/support/tickets', supportController.getSupportTickets);
-router.post('/support/tickets/:ticketId/assign', supportController.assignTicket);
+// PRODUCT CONTROL SYSTEM
+router.get('/products', dashboardController.getAllProducts);
+router.post('/products/:productId/flag', dashboardController.flagProduct);
+router.post('/products/:productId/unflag', dashboardController.unflagProduct);
+router.post('/products/:productId/block', dashboardController.blockProduct);
+router.post('/products/:productId/unblock', dashboardController.unblockProduct);
+router.delete('/products/:productId', dashboardController.deleteProduct);
+
+// STORE DESIGN CONTROL
+router.get('/themes', settingsController.getThemes);
+router.post('/themes', settingsController.createTheme);
+router.put('/themes/:themeId', settingsController.updateTheme);
+router.post('/businesses/:businessId/theme', settingsController.assignThemeToBusiness);
+
+// MARKETING SYSTEM
+router.get('/campaigns', settingsController.getCampaigns);
+router.post('/campaigns', settingsController.createCampaign);
+router.put('/campaigns/:campaignId', settingsController.updateCampaign);
+router.post('/campaigns/:campaignId/publish', settingsController.publishCampaign);
+router.post('/campaigns/:campaignId/stop', settingsController.stopCampaign);
+
+// NOTIFICATION SYSTEM
+router.get('/notifications', settingsController.getNotifications);
+router.post('/notifications', settingsController.createNotification);
+router.post('/notifications/broadcast', settingsController.broadcastNotification);
+
+// AI SYSTEM (BASIC)
+router.get('/ai/insights', dashboardController.getAIInsights);
+router.post('/ai/scan-products', dashboardController.scanProductsForIssues);
 router.post('/support/tickets/:ticketId/resolve', supportController.resolveTicket);
 
 // SYSTEM SETTINGS

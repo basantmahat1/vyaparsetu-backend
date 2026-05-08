@@ -10,6 +10,11 @@ const SupportTicket = require('./supportTicket.model');
 const PaymentHistory = require('./paymentHistory.model');
 const SystemSettings = require('./systemSettings.model');
 const ActivityLog = require('./activityLog.model');
+const Theme = require('./theme.model');
+const ThemeVersion = require('./themeVersion.model');
+const ThemeTemplate = require('./themeTemplate.model');
+const Campaign = require('./campaign.model');
+const Notification = require('./notification.model');
 
 module.exports = {
   Business,
@@ -23,5 +28,10 @@ module.exports = {
   SupportTicket,
   PaymentHistory,
   SystemSettings,
-  ActivityLog
+  ActivityLog,
+  Theme,
+  ThemeVersion,
+  ThemeTemplate,
+  Campaign,
+  Notification
 };

@@ -62,6 +62,38 @@ const Product = sequelize.define('Product', {
     defaultValue: true,
     field: 'is_active'
   },
+  flagged: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  flagReason: {
+    type: DataTypes.TEXT,
+    field: 'flag_reason'
+  },
+  flaggedAt: {
+    type: DataTypes.DATE,
+    field: 'flagged_at'
+  },
+  flaggedBy: {
+    type: DataTypes.UUID,
+    field: 'flagged_by'
+  },
+  blocked: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  blockReason: {
+    type: DataTypes.TEXT,
+    field: 'block_reason'
+  },
+  blockedAt: {
+    type: DataTypes.DATE,
+    field: 'blocked_at'
+  },
+  blockedBy: {
+    type: DataTypes.UUID,
+    field: 'blocked_by'
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

@@ -10,6 +10,7 @@ router.use(authMiddleware);
 router.get('/', roleMiddleware('super_admin'), businessController.getBusinesses);
 router.post('/', roleMiddleware('super_admin'), businessController.createBusiness);
 router.get('/:id', roleMiddleware('super_admin', 'owner'), businessController.getBusinessById);
+router.post('/:id/kyc-submit', roleMiddleware('super_admin', 'owner'), businessController.kycUpload, businessController.submitBusinessKyc);
 router.put('/:id', roleMiddleware('super_admin', 'owner'), businessController.updateBusiness);
 router.delete('/:id', roleMiddleware('super_admin'), businessController.deleteBusiness);
 router.get('/:id/stats', roleMiddleware('super_admin', 'owner'), businessController.getBusinessStats);

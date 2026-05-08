@@ -14,7 +14,21 @@ const register = async (req, res) => {
     }
 
     let businessId = null;
-    let userRole = role || 'cashier';
+    let userRole = role || 'owner';
+
+    // Only allow owner registration for now
+    if (userRole !== 'owner') {
+      return sendError(res, 400, 'Only business owners can register at this time. Staff accounts must be created by business owners.');
+    }
+
+    // Create user first
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: userRole,
+      businessId: null // Will update after business creation for owners
+    });
 
     // If role is owner, create a business
     if (userRole === 'owner') {
@@ -24,24 +38,13 @@ const register = async (req, res) => {
 
       const business = await Business.create({
         name: businessName,
-        ownerId: null, // Will update after user creation
+        ownerId: user.id,
         plan: 'basic'
       });
       businessId = business.id;
-    }
 
-    // Create user
-    const user = await User.create({
-      name,
-      email,
-      password,
-      role: userRole,
-      businessId
-    });
-
-    // Update business ownerId if owner
-    if (userRole === 'owner' && businessId) {
-      await Business.update({ ownerId: user.id }, { where: { id: businessId } });
+      // Update user with businessId
+      await user.update({ businessId });
     }
 
     // Generate token
