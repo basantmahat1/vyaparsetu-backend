@@ -1,4 +1,4 @@
-const { Product } = require('../models');
+const { Product, Business } = require('../models');
 const { sendResponse, sendError } = require('../utils/response');
 const { Op } = require('sequelize');
 
@@ -66,6 +66,32 @@ const createProduct = async (req, res) => {
     
     if (!businessId && req.user.role !== 'super_admin') {
       return sendError(res, 403, 'Business ID required');
+    }
+
+    // Check KYC status for product limit
+    const business = await Business.findByPk(businessId, {
+      attributes: ['id', 'kycStatus', 'isApproved']
+    });
+
+    if (!business) {
+      return sendError(res, 404, 'Business not found');
+    }
+
+    const isKycVerified = business.kycStatus === 'verified' && business.isApproved;
+
+    // Limited mode: max 50 products
+    if (!isKycVerified) {
+      const productCount = await Product.count({ where: { businessId } });
+      if (productCount >= 50) {
+        return res.status(403).json({
+          success: false,
+          locked: true,
+          message: 'Product limit reached (50). Please complete KYC verification to add more products.',
+          currentCount: productCount,
+          limit: 50,
+          redirectTo: '/owner/dashboard?view=kyc'
+        });
+      }
     }
 
     const product = await Product.create({

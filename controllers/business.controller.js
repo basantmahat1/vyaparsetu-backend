@@ -8,7 +8,10 @@ const path = require('path');
 const fs = require('fs');
 
 // KYC Document Upload Configuration
-const kycStorage = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloud_name'
+const cloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloud_name'
+  && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
+
+const kycStorage = cloudinaryConfigured
   ? new CloudinaryStorage({
       cloudinary: cloudinary,
       params: {
@@ -50,6 +53,16 @@ const kycUpload = multer({
   { name: 'registrationCert', maxCount: 1 },
   { name: 'businessLogo', maxCount: 1 }
 ]);
+
+function getKycFileUrl(file) {
+  if (!file) return '';
+  if (typeof file.path === 'string' && file.path.startsWith('http')) return file.path;
+  if (file.secure_url) return file.secure_url;
+  if (file.url) return file.url;
+  const filename = path.basename(file.path || file.filename || '');
+  return filename ? `/uploads/kyc/${filename}` : '';
+}
+
 
 const getBusinesses = async (req, res) => {
   try {
@@ -182,15 +195,8 @@ const submitBusinessKyc = async (req, res) => {
     const fileUrls = {};
     Object.keys(req.files).forEach(fieldName => {
       if (req.files[fieldName] && req.files[fieldName][0]) {
-        // If using Cloudinary, path is the URL; if local storage, create a URL
         const file = req.files[fieldName][0];
-        if (file.path.startsWith('http')) {
-          // Cloudinary URL
-          fileUrls[fieldName + 'Url'] = file.path;
-        } else {
-          // Local file path - create accessible URL
-          fileUrls[fieldName + 'Url'] = `/uploads/kyc/${path.basename(file.path)}`;
-        }
+        fileUrls[fieldName + 'Url'] = getKycFileUrl(file);
       }
     });
 

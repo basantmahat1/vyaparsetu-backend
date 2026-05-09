@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const errorMiddleware = require('../middlewares/error.middleware');
+const { kycCheckMiddleware } = require('../middlewares/kycCheck.middleware');
 
 const authRoutes = require('../routes/auth.routes');
 const productRoutes = require('../routes/product.routes');
@@ -11,6 +12,7 @@ const dashboardRoutes = require('../routes/dashboard.routes');
 const superAdminRoutes = require('../routes/superadmin');
 const staffRoutes = require('../routes/staff.routes');
 const themeRoutes = require('../routes/theme.routes');
+const kycStatusRoutes = require('../routes/kycStatus.routes');
 
 const app = express();
 
@@ -38,6 +40,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/admin', superAdminRoutes);
 app.use('/api/theme', themeRoutes);
+app.use('/api/kyc', kycStatusRoutes);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server running' });
